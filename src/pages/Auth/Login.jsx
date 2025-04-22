@@ -1,0 +1,114 @@
+import { Button, TextField } from '@mui/material';
+import React, { useState } from 'react'
+import { Link } from 'react-router';
+import { useNavigate } from 'react-router';
+import { useAuth } from '../../context/authContext';
+
+const Login = () => {
+  const [formData, setFormData] = useState({
+    email: "",
+    password: "",
+  });
+  
+  const navigate = useNavigate();
+
+  const handleInputChange = (event) => {
+    const { name, value } = event.target;
+    setFormData({ ...formData, [name]: value });
+  };
+
+  const {login} = useAuth();
+
+  const handleSubmit = async(event) => {
+    event.preventDefault(); 
+    try {
+     login(formData.email, formData.password);
+     navigate('/home');
+
+    } catch (error) {
+
+      if (typeof error === 'undefined') {
+        console.log('Error indefinido');
+      } else {
+        const {message} = error 
+        console.log(message, "mensaje")
+        alert(message);
+      }
+
+    }
+  };
+  return (
+    <div className="bg-custom-dark bg-backgroundCard bg-custom-gradient h-screen">
+    <div className="flex justify-center items-center h-full ">
+      <div className=" h-auto w-[30%] p-6 shadow-lg shadow-blue-700/20 ">
+        <form
+          onSubmit={handleSubmit}
+          className="flex flex-col items-start h-full justify-start gap-10"
+        >
+          <h1 className=" font-bold text-4xl  text-black ">
+            Iniciar seccion
+          </h1>
+          <TextField
+            id="filled-basic"
+            label="Correo"
+            variant="outlined"
+            value={formData.email}
+            name="email"
+            color="primary"
+            fullWidth
+            required
+            onChange={handleInputChange}
+            sx={{
+              borderRadius: "4px",
+              "& .MuiOutlinedInput-root": {
+                "&.Mui-focused fieldset": {
+                  borderColor: "hsl(220, 20%, 65%)",
+                },
+              },
+            }}
+            slotProps={{
+              input: {
+                style: { color: "hsl(220, 20%, 65%)" },
+              },
+            }}
+          />
+          <TextField
+            id="filled-basic"
+            label="Contraseña"
+            type='password'
+            variant="outlined"
+            value={formData.password}
+            name="password"
+            required
+            onChange={handleInputChange}
+            fullWidth
+            sx={{
+              borderRadius: "4px",
+              "& .MuiOutlinedInput-root": {
+                "&.Mui-focused fieldset": {
+                  borderColor: "hsl(0, 20.224719101123593%, 65.09803921568627%)",
+                },
+              },
+            }}
+            slotProps={{
+              input: {
+                style: { color: "hsl(220, 20%, 65%)" },
+              },
+            }}
+          />
+          <div>
+            <h1 className="text-black"> ¿No tienes una cuenta? <Link to={'/register'} className="text-blue-700 hover:text-blue-600 cursor-pointer">Registrate</Link></h1>
+          </div>
+          <div className="flex justify-center w-full">
+            <Button type="submit" variant="outlined">
+              Ingresar
+            </Button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  )
+}
+
+export default Login
